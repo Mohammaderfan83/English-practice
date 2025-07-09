@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mindmap Topics</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3f4f6;
+      opacity: 0;
+      transition: opacity 1s ease, background-color 0.5s ease, color 0.5s ease;
+      color: #000;
+    }
+
+    .navbar, .sidebar {
+      background-color:#2a6bb0;
+      transition: background-color 0.5s ease, color 0.5s ease;
+    }
+
+    .navbar-brand, .sidebar h5, .sidebar button {
+      color: #fff;
+      transition: color 0.5s ease;
+    }
+
+    .sidebar button {
+      background-color: #1b263b;
+      border: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .sidebar button:hover {
+      background-color: #415a77;
+    }
+
+    .box {
+      width: 200px;
+      height: 200px;
+      background-color: #e0e7ff;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      font-weight: bold;
+      transition: all 0.5s ease;
+      position: relative;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      color: #000;
+      padding: 15px;
+      text-align: center;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: normal;
+    }
+
+    .box:hover {
+      background-color: #c7d2fe;
+    }
+
+    body.dark-mode .box {
+      background-color: #333;
+      color: #ddd;
+      box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+    }
+
+    body.dark-mode .box:hover {
+      background-color: #555;
+    }
+
+    .mindmap {
+      opacity: 0;
+      transform: scale(0.9);
+      pointer-events: none;
+      transition: all 0.5s ease;
+      text-align: center;
+      margin-top: 30px;
+      max-height: 0;
+      overflow: hidden;
+    }
+
+    .mindmap.show {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+      max-height: 2000px;
+      transition: all 0.5s ease, max-height 1s ease;
+    }
+
+    .arrow {
+      width: 2px;
+      height: 40px;
+      background-color: #555;
+      margin: 10px auto;
+      position: relative;
+      transition: background-color 0.5s ease;
+    }
+
+    .arrow::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 10px solid #555;
+      transition: border-top-color 0.5s ease;
+    }
+
+    .show-btn {
+      display: block;
+      margin: 30px auto 20px;
+      padding: 10px 25px;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 30px;
+      transition: all 0.5s ease;
+      cursor: pointer;
+      color: white;
+      background-color: #0d6efd;
+      border: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .show-btn:hover {
+      background-color: #0d6efd;
+      color: white;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .show-btn:active {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 10px #0d6efd;
+    }
+
+    .show-btn::after {
+      content: "";
+      display: inline-block;
+      height: 100%;
+      width: 100%;
+      border-radius: 30px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      transition: all 0.4s;
+      background-color: #0d6efd;
+    }
+
+    .show-btn:hover::after {
+      transform: scaleX(1.4) scaleY(1.6);
+      opacity: 0;
+    }
+
+    .offcanvas-body .btn {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .sidebar {
+        height: 100vh;
+        padding: 20px;
+        color: white;
+      }
+
+      .desktop-sidebar .btn {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+    }
+
+    /* ===== Dark Mode ===== */
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .navbar, 
+    body.dark-mode .sidebar {
+      background-color: #cc171796;
+    }
+
+    body.dark-mode .navbar-brand, 
+    body.dark-mode .sidebar h5, 
+    body.dark-mode .sidebar button {
+      color: #e0e0e0;
+    }
+
+    body.dark-mode .sidebar button {
+      background-color: #333;
+    }
+
+    body.dark-mode .sidebar button:hover {
+      background-color: #555;
+    }
+
+    body.dark-mode .circle {
+      background-color: #333;
+      color: #ddd;
+      box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+    }
+
+    body.dark-mode .circle:hover {
+      background-color: #555;
+    }
+
+    body.dark-mode .arrow {
+      background-color: #bbb;
+    }
+
+    body.dark-mode .arrow::after {
+      border-top-color: #bbb;
+    }
+
+    body.dark-mode .show-btn {
+      background-color: #40728a;
+      color: white;
+    }
+
+    body.dark-mode .show-btn:hover {
+      background-color: #40728a;
+    }
+
+    body.dark-mode .show-btn::after {
+      background-color: #40728a;
+    }
+
+    #darkModeToggle {
+      width: 40px;
+      height: 40px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      outline: none;
+      transition: fill 0.5s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+    }
+
+    #darkModeToggle svg {
+      width: 28px;
+      height: 28px;
+      transition: all 0.5s ease;
+      display: block;
+    }
+
+
+    body:not(.dark-mode) #darkModeToggle svg {
+      fill: #333;
+      filter: drop-shadow(0 0 1px rgba(0,0,0,0.1));
+    }
+
+    body.dark-mode #darkModeToggle svg {
+      fill: #f0e68c;
+      filter: drop-shadow(0 0 2px #f0e68c);
+    }
+
+
+    .navbar-dark .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+      transition: background-image 0.5s ease;
+    }
+
+
+    body:not(.dark-mode) .navbar-dark .navbar-toggler-icon {
+      background-image: url("data:image/svg+xml;charset=utf8,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(0, 0, 0, 0.7)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    }
+
+    footer {
+      background-color: #0d1b2a;
+      color: #a8b2d1;
+      padding: 25px 20px;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 500;
+      box-shadow: inset 0 1px 3px rgba(255,255,255,0.1);
+      margin-top: auto;
+      user-select: none;
+      width: 100%;
+      flex-shrink: 0;
+    }
+    footer a {
+      color: #7ea0ff;
+      text-decoration: none;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    .topic-box {
+      background-color: #4f46e5;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+      user-select: none;
+      max-width: 100%;
+      word-wrap: break-word;
+      transition: background-color 0.3s ease;
+    }
+    body.dark-mode .topic-box {
+      background-color: #1d224c;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.5);
+    }
+
+    .main-content {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      width: 100%;
+    }
+
+    #subject-area {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-wrapper {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .mindmap-container {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    @keyframes bouncePulse {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        box-shadow: 0 0 0 rgba(0, 153, 255, 0.4);
+    }
+    50% {
+        transform: translateY(-6px) scale(1.08);
+        box-shadow: 0 0 25px 10px rgba(0, 153, 255, 0.7);
+    }
+    }
+
+    .attention {
+    animation: bouncePulse 1.8s infinite ease-in-out;
+    }
+
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar d-flex justify-content-between px-3 align-items-center">
+    <a class="navbar-brand" href="#">English Practice</a>
+
+    <!-- Dark mode toggle button -->
+    <button id="darkModeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" type="button">
+      <!-- آیکون خورشید جدید و واضح -->
+      <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+        <circle cx="12" cy="12" r="5" />
+        <g stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="4" />
+          <line x1="12" y1="20" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" />
+          <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="4" y2="12" />
+          <line x1="20" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" />
+          <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" />
+        </g>
+      </svg>
+      <!-- آیکون ماه -->
+      <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" >
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+      </svg>
+    </button>
+
+    <button class="navbar-toggler d-block d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-label="Toggle menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </nav>
+
+  <!-- Offcanvas Sidebar for Mobile -->
+  
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Topics</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <button class="btn btn-primary" onclick="showSubject(1)" data-bs-dismiss="offcanvas">Men Love Shopping Too</button>
+        <button class="btn btn-primary" onclick="showSubject(2)" data-bs-dismiss="offcanvas">Comfort Over Fashion</button>
+        <button class="btn btn-primary" onclick="showSubject(3)" data-bs-dismiss="offcanvas">Clothes Reflect Personality</button>
+        <button class="btn btn-primary" onclick="showSubject(4)" data-bs-dismiss="offcanvas">Who Pays the Price?</button>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="container-fluid h-100">
+        <div class="row h-100">
+          <!-- Sidebar -->
+          <div class="col-md-3 d-none d-md-block sidebar desktop-sidebar">
+            <h5>Topics</h5>
+            <button class="btn btn-secondary" onclick="showSubject(1)">Men Love Shopping Too</button>
+            <button class="btn btn-secondary" onclick="showSubject(2)">Comfort Over Fashion</button>
+            <button class="btn btn-secondary" onclick="showSubject(3)">Clothes Reflect Personality</button>
+            <button class="btn btn-secondary" onclick="showSubject(4)">Who Pays the Price?</button>
+          </div>
+
+          <!-- Main Content -->
+          <div class="col-md-9 p-4 content-wrapper">
+            <div id="subject-area">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  <footer>
+    <p>© 2025 Mindmap Viewer. All rights reserved. Crafted with ❤️ by Erfan Matinfard</p>
+  </footer>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    window.addEventListener('load', () => {
+      document.body.style.opacity = '1';
+    });
+
+    const contentData = {
+      1: {
+        title: "Topic1: Men are just as interested in shopping for clothes as women.",
+        circles: [
+          "No",
+          "1.men buy more for need <br><br> 2.shopping is a hobby for women",
+          "1.comparison of women's and men's stores",
+          "Women go shopping more than men. "
+        ]
+      },
+      2: {
+        title: "Topic2: These days,nobody is prepared to suffer in order to look good. The most important thing is comfort.",
+        circles: ["No"
+        , "1.beauty is more important for both gender <br>2.Human beings naturally love beauty."
+        , "1.High heel shoes <br> 2.Hard piercing <br>3.major surgery <br> 4.tattoo"
+        , "People pay more attention to beauty than comfort."]
+      },
+      3: {
+        title: "Topic3: You can tell a lot about someone's personality from the clothes they wear.",
+        circles: ["No"
+        , "1.Everything isn't appearance <br> 2.in today's world most people follow fashion "
+        , "1.The poor <br> 2.The ordinary <br> 3.The rich"
+        , "Fashion choices can't reveal aspects of a person’s character"]
+      },
+      4: {
+        title: "Topic4: Cheap fashion means exploiting people in less developed countries.",
+        circles: ["Yes"
+        , "1.Use cheap worker <br> 2.setting up factories in poor countries"
+        , "1.india <br> 2.vietnam <br> 3.Rich countries like USA"
+        , "Low prices often come at a high human cost."]
+      }
+    };
+
+    function showSubject(num) {
+        const subject = contentData[num];
+        const container = document.getElementById("subject-area");
+
+        container.innerHTML = `
+            <div class="topic-box">${subject.title}</div>
+            <button class="btn btn-primary show-btn attention" onclick="toggleMindmap(${num}, this)">Show</button>
+            <div class="mindmap" id="mindmap-${num}">
+            ${subject.circles.map((text, index) => `
+                ${index > 0 ? '<div class="arrow"></div>' : ''}
+                <div class="box">${text}</div>
+            `).join('')}
+            </div>
+        `;
+    }
+
+
+    function toggleMindmap(num, button) {
+        const mindmap = document.getElementById(`mindmap-${num}`);
+        mindmap.classList.toggle("show");
+
+        if (mindmap.classList.contains("show")) {
+            button.textContent = "Hidden";
+            button.classList.remove("attention"); 
+        } else {
+            button.textContent = "Show";
+            button.classList.add("attention"); 
+        }
+
+        if (mindmap.classList.contains("show")) {
+            setTimeout(() => {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+            }, 500);
+        }
+    }
+
+
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const iconSun = document.getElementById('iconSun');
+    const iconMoon = document.getElementById('iconMoon');
+
+    function setDarkMode(enabled) {
+      if(enabled) {
+        document.body.classList.add('dark-mode');
+        iconSun.style.display = 'block';
+        iconMoon.style.display = 'none';
+        darkModeToggle.setAttribute('aria-label', 'Switch to light mode');
+        localStorage.setItem('darkMode', 'enabled');
+      } else {
+        document.body.classList.remove('dark-mode');
+        iconSun.style.display = 'none';
+        iconMoon.style.display = 'block';
+        darkModeToggle.setAttribute('aria-label', 'Switch to dark mode');
+        localStorage.setItem('darkMode', 'disabled');
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const darkModeSetting = localStorage.getItem('darkMode');
+      if(darkModeSetting === 'enabled') {
+        setDarkMode(true);
+      } else {
+        setDarkMode(false);
+      }
+      showSubject(1);
+    });
+
+    darkModeToggle.addEventListener('click', () => {
+      const enabled = document.body.classList.contains('dark-mode');
+      setDarkMode(!enabled);
+    });
+
+  </script>
+</body>
+</html>

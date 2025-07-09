@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mindmap Topics</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar d-flex justify-content-between px-3 align-items-center">
+    <a class="navbar-brand" href="#">English Practice</a>
+
+    <!-- Dark mode toggle button -->
+    <button id="darkModeToggle" aria-label="Toggle dark mode" title="Toggle dark mode" type="button">
+      <!-- آیکون خورشید جدید و واضح -->
+      <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+        <circle cx="12" cy="12" r="5" />
+        <g stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="4" />
+          <line x1="12" y1="20" x2="12" y2="23" />
+          <line x1="4.22" y1="4.22" x2="6.34" y2="6.34" />
+          <line x1="17.66" y1="17.66" x2="19.78" y2="19.78" />
+          <line x1="1" y1="12" x2="4" y2="12" />
+          <line x1="20" y1="12" x2="23" y2="12" />
+          <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" />
+          <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" />
+        </g>
+      </svg>
+      <!-- آیکون ماه -->
+      <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" >
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+      </svg>
+    </button>
+
+    <button class="navbar-toggler d-block d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-label="Toggle menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </nav>
+
+  <!-- Offcanvas Sidebar for Mobile -->
+  
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Topics</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <button class="btn btn-primary" onclick="showSubject(1)" data-bs-dismiss="offcanvas">Men Love Shopping Too</button>
+        <button class="btn btn-primary" onclick="showSubject(2)" data-bs-dismiss="offcanvas">Comfort Over Fashion</button>
+        <button class="btn btn-primary" onclick="showSubject(3)" data-bs-dismiss="offcanvas">Clothes Reflect Personality</button>
+        <button class="btn btn-primary" onclick="showSubject(4)" data-bs-dismiss="offcanvas">Who Pays the Price?</button>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="container-fluid h-100">
+        <div class="row h-100">
+          <!-- Sidebar -->
+          <div class="col-md-3 d-none d-md-block sidebar desktop-sidebar">
+            <h5>Topics</h5>
+            <button class="btn btn-secondary" onclick="showSubject(1)">Men Love Shopping Too</button>
+            <button class="btn btn-secondary" onclick="showSubject(2)">Comfort Over Fashion</button>
+            <button class="btn btn-secondary" onclick="showSubject(3)">Clothes Reflect Personality</button>
+            <button class="btn btn-secondary" onclick="showSubject(4)">Who Pays the Price?</button>
+          </div>
+
+          <!-- Main Content -->
+          <div class="col-md-9 p-4 content-wrapper">
+            <div id="subject-area">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  <footer>
+    <p>© 2025 Mindmap Viewer. All rights reserved. Crafted with ❤️ by Erfan Matinfard</p>
+  </footer>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+</html>
